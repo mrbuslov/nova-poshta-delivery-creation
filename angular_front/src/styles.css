@@ -1,0 +1,144 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~ngx-toastr/toastr';
+@font-face {
+    font-family: "Monsterrat";
+    src: url("assets/monsterrat.ttf");
+}
+*{
+    font-family: "Monsterrat";
+}
+
+.go-to-np{
+    background: #fff;
+    border: 1px solid rgb(156, 103, 206);
+    color: #000;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    padding: 5px 0;
+    border-radius: 5px;
+
+    transition: all .3s ease;
+}
+.go-to-np:hover{
+    background: rgb(156, 103, 206);
+    color: #fff;
+}
+
+#postForm, #userForm{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.post-table td{
+    text-align: center;
+}
+.post-table td input{
+    outline: none;
+    border: 1px solid;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.remove-post{
+    font-weight: bold;
+    text-align: right !important;
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.searched-city{
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: #fff;
+    z-index: 1;
+}
+.searched-city li{
+    list-style: none;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 5px;
+}
+.searched-city p{
+    margin: 0;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
+.searched-address{
+    border-radius: 5px;
+    width: 202px;
+    outline: none;
+    padding: 5px;
+    font-size: 16px;
+}
+
+
+
+.postForm__submit-button{
+    width: 200px;
+    height: 40px;
+    font-size: 16px;
+    margin-top: 20px;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+
+
+#accountSubmitButton, #addDeliveryBtn{
+    height: 40px;
+    width: 50%;
+    font-size: 16px;
+    color: #fff;
+    background: rgb(163, 163, 255);
+    margin: 20px auto;
+    outline: none;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+
+    transition: all .3s ease;
+}
+#accountSubmitButton:hover{
+    background: rgb(135, 135, 253);
+}
+#addDeliveryBtn{
+    background: #fff;
+    color: #000;
+    border: 1px solid rgb(163, 163, 255);
+    width: 30%;
+    height: 35px;
+}
+#addDeliveryBtn:hover{
+    background: rgb(135, 135, 253);
+    color: #fff;
+    width: 45%;
+}
+.removeDeliveryBtn{
+    font-size: 20px;
+    text-align: right; 
+    cursor: pointer;
+}
+.removeDeliveryBtn span{
+    border-radius: 50%;
+    padding: 1px 8px;
+    background: #fff;
+    color: #000;
+    border: 1px solid rgb(163, 163, 255);
+
+    transition: all .3s ease;
+}
+.removeDeliveryBtn span:hover{
+    background: rgb(135, 135, 253);
+    color: #fff;
+}

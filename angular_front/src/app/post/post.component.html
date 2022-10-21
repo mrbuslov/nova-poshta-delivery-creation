@@ -1,0 +1,88 @@
+
+<form action="" [formGroup]="postForm" id="postForm" (ngSubmit)="postFormSubmit()" ngNativeValidate>
+    <ng-container formArrayName="postFormsArray" *ngFor="let del of postFormsArray.controls; let i = index;">
+        <div (click)="removePostRecord(i)" class="removeDeliveryBtn"><span>x</span></div>
+        <table class="post-table" [formGroupName]="i">
+            <tr>
+                <td>Reciever Name</td>
+                <td>Reciever Surname</td>
+                <td>Reciever Phone Number</td>
+                <td>Delivery City</td>
+                <td>Delivery Address</td>
+                <td>Description</td>
+                <td>Assessed Value</td>
+            </tr>
+            <tr>
+                <td><input type="text" required ng-required="true" formControlName="recieverName"></td>
+                <td><input type="text" required ng-required="true" formControlName="recieverSurname"></td>
+                <td><input type="text" required ng-required="true" formControlName="recieverNumber" placeholder="+380981234567"></td>
+                <td style="position: relative;">
+                    <input type="text" required ng-required="true" formControlName="deliveryDepartmentCity" class="deliveryDepartmentCity">
+                    <input type="hidden" formControlName="deliveryDepartmentCityRef" id="deliveryDepartmentCityRef">
+                    <ul class="searched-city" *ngIf="del.get('showDeliverySeachedCityUl')!.value">
+                        <li *ngFor="let searching of searched_delivery_city_response" (click)="loadSenderPostDepartments($event, searching.full_name, searching.short_name, searching.ref)">
+                            <p>{{searching.full_name}}</p><input type="hidden" value="{{searching.short_name}}" class="short_city_hidden">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <select class="searched-address" #receiverDepartmentAddressOption (change)="changeDepartmentOption($event, receiverDepartmentAddressOption.value)"> 
+                        <option *ngFor="let searching of searched_delivery_department_response; let i = index;" value="{{i}}" [selected]="i==0">{{searching.name}}</option>
+                    </select>
+                </td>
+                <td><input type="text" required ng-required="true" formControlName="description"></td>
+                <td><input type="text" required ng-required="true" formControlName="assessedValue"></td>
+            </tr>
+
+
+            
+            <tr>
+                <td>Payer Type</td>
+                <td>Payment Method</td>
+                <td>Date</td>
+                <td>Cargo Type</td>
+                <td>Weight</td>
+                <td>Seats Amount</td>
+            </tr>
+            <tr>
+                <td>
+                    <select class="searched-address" #payerTypeOptionsSelect (change)="setPayerTypeOptions($event, payerTypeOptionsSelect.value)"> 
+                        <option *ngFor="let option of payerTypeOptions" value="{{option}}">{{option}}</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="searched-address" #payerMethodOptionsSelect (change)="setPayerMethodOptions($event, payerMethodOptionsSelect.value)"> 
+                        <option *ngFor="let option of payerMethodOptions" value="{{option}}">{{option}}</option>
+                    </select>
+                </td>
+                <td><input type="date" required ng-required="true" formControlName="date"></td>
+                <td>
+                    <select class="searched-address" #cargoTypeOptionsSelect (change)="setCargoTypeOptions($event, cargoTypeOptionsSelect.value)"> 
+                        <option *ngFor="let option of cargoTypeOptions" value="{{option}}">{{option}}</option>
+                    </select>
+                </td>
+                <td><input type="number" required ng-required="true" formControlName="weight" step="any"> кг</td>
+                <td><input type="number" required ng-required="true" formControlName="seatsAmount"></td>
+            </tr>
+
+
+            <tr>
+                <td>Width</td>
+                <td>Height</td>
+                <td>Length</td>
+                <td>Total Volume</td>
+            </tr>
+            <tr>
+                <td><input type="number" required ng-required="true" formControlName="width" (input)="changeTotalVolume($event, 'width')"></td>
+                <td><input type="number" required ng-required="true" formControlName="height" (input)="changeTotalVolume($event, 'height')"></td>
+                <td><input type="number" required ng-required="true" formControlName="length" (input)="changeTotalVolume($event, 'length')"></td>
+                <td><span>{{del.get('totalVolume').value}} м3</span></td>
+            </tr>
+        </table>    
+    </ng-container>
+    <button type="button" (click)="addDeliveryToForm()" id="addDeliveryBtn">Add delivery</button>
+
+    <input type="submit" value="submit" class="postForm__submit-button">
+</form>
+
+<button (click)="create()">create</button>

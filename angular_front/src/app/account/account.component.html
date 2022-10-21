@@ -1,0 +1,41 @@
+<a href="https://new.novaposhta.ua/dashboard/invoices-my" class="go-to-np" target="_blank">Go to Nova Poshta</a>
+<form action="" [formGroup]="userForm" id="userForm" (ngSubmit)="userFormSubmit()" ngNativeValidate>
+    <ng-container *ngIf="!isAuthenticated()">
+        <button (click)="login()">Login</button>
+    </ng-container>
+    <ng-container *ngIf="isAuthenticated()">
+        <table class="post-table">
+            <tr>
+                <td>Your first name</td>
+                <td>Your last name</td>
+                <td>npToken</td>
+                <td>Your phone number</td>
+                <td>Your City</td>
+                <td>Your Warehouse Address</td>
+            </tr>
+            <tr>
+                <td><input type="text" ng-required="true" formControlName="firstName"></td>
+                <td><input type="text" ng-required="true" formControlName="lastName"></td>
+                <td>{{userForm.get('npToken').value}}</td>
+                <td><input type="text" ng-required="true" formControlName="phoneNumber" placeholder="+380981234567"></td>
+                <td style="position: relative;">
+                    <input type="text" ng-required="true" formControlName="senderDepartmentCity" id="senderDepartmentCity" (click)="subscribeToApiByClickSenderDepartment()">
+                    <input type="hidden" formControlName="senderDepartmentCityRef" id="senderDepartmentCityRef">
+                    <ul class="searched-city" *ngIf="showSeachedCityUl">
+                        <li *ngFor="let searching of searched_city_response" (click)="loadSenderPostDepartments(searching.full_name, searching.short_name, searching.ref)">
+                            <p>{{searching.full_name}}</p><input type="hidden" value="{{searching.short_name}}" class="short_city_hidden">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <select class="searched-address" #senderDepartmentAddressSelect (change)="changeDepartmentOption(senderDepartmentAddressSelect.value)"> 
+                        <option *ngFor="let searching of searched_department_response; let i = index;" value="{{i}}" [selected]="i==0">{{searching.name}}</option>
+                    </select>
+                </td>
+            </tr>
+
+
+        </table>
+        <input type="submit" value="Save" id="accountSubmitButton">
+    </ng-container>
+</form>
