@@ -95,6 +95,12 @@ export class AccountComponent implements OnInit  {
 
 
   // ------------------------------------- LOGIN FORM --------------------------------------------------------------
+  whichAuthForm:string = 'loginForm';
+  changeAuthForm(authForm:string){
+    this.whichAuthForm = authForm;
+  }
+
+
 
   loginForm: FormGroup;
   showLoginForm(){
@@ -125,6 +131,43 @@ export class AccountComponent implements OnInit  {
     );
   }
 
+
+  
+  logout(){
+    this.currentUser = null;
+    window.location.reload();
+  }
+
+  // ------------------------------------- REGISTRATION FORM --------------------------------------------------------------
+
+  registrationForm: FormGroup = this.formBuilder.group({
+    email: '',
+    password: '',
+    npToken: '',
+  });
+
+  get getRegistrationForm(){
+    return this.registrationForm.controls;
+  }
+
+  registrationFormSubmit(){
+    this.userService.register({'email': this.getRegistrationForm['email'].value, 'password': this.getRegistrationForm['password'].value, 'npToken': this.getRegistrationForm['npToken'].value})
+    .subscribe((user:any)=>{
+      this.userService.login({'email': this.getRegistrationForm['email'].value, 'password': this.getRegistrationForm['password'].value})  
+      .subscribe((user:any)=>{
+        this.currentUser = JSON.stringify(user);
+        this.loginToken = this.currentUserToken;
+        this.getUserDataFromServer();
+        this.showUserDataForm();
+      })
+    },
+    error => {
+      console.log(error)
+      this.toastr.error('Something went wrong :(', 'Sorry' , this.toastrOptions);
+    }
+    );
+  }
+  
   // ------------------------------------- Account FORM --------------------------------------------------------------
 
   async getUserDataFromServer(){

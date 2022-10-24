@@ -30,20 +30,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['email', 'password']
+        fields = ['email', 'password', 'npToken']
 
     def create(self, validated_data):
         return Account.objects.create_user(**validated_data)
 
-    '''
-    send post request as an example
-    {
-        "user": {
-            "email": "user1@user.user",
-            "password": "qweasdzxc"
-        }
-    }
-    '''
 
 
 

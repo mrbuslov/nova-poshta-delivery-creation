@@ -26,17 +26,20 @@
     color: #fff;
 }
 
-#postForm, #userForm, #loginForm{
+#postForm, #userForm, #loginForm, #registrationForm{
     display: flex;
     flex-direction: column;
     padding: 20px;
     box-sizing: border-box;
 }
-#loginForm{
+#loginForm, #registrationForm{
+    flex-direction: column;
+}
+.formControls{
+    display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-
 }
 .login-input{
     outline: none;
@@ -46,7 +49,7 @@
     font-size: 16px;
     width: 200px;
 }
-.loginForm__submit{
+.loginForm__submit, .registrationForm__submit{
     width: 200px;
     height: 40px;
     font-size: 20px;
@@ -56,6 +59,30 @@
     color: #fff;
     border-radius: 5px;
 }
+
+.go_to_login_reg{
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.go_to_login_reg span{
+    color: #5d64ec;
+}
+
+
+.logout-btn{
+    text-align: right;
+    margin-bottom: 0;
+    margin-right: 20px;
+    color: #5d64ec;
+    cursor: pointer;
+    transition: color .2s ease;
+}
+.logout-btn:hover{
+    color: #474db5;
+}
+
 
 .post-table td{
     text-align: center;

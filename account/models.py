@@ -3,14 +3,16 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 import uuid
 
 class MyAccountManager(BaseUserManager):
-	def create_user(self, email, password=None):
+	def create_user(self, email, password, npToken):
 		if not email: raise ValueError('Enter email')
 
 		user = self.model(
 			email=self.normalize_email(email),
+			npToken=npToken,
 		)
 
 		user.set_password(password)
+		user.is_active = True
 		user.save(using=self._db)
 		return user
 

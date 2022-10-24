@@ -1,13 +1,27 @@
 <a href="https://new.novaposhta.ua/dashboard/invoices-my" class="go-to-np" target="_blank">Go to Nova Poshta</a>
 
 <ng-container *ngIf="!loginToken">
-    <form [formGroup]="loginForm" id="loginForm" (ngSubmit)="loginFormSubmit()" ngNativeValidate>
-        <input type="email" formControlName="email" class="login-input" placeholder="Email">
-        <input type="password" formControlName="password" class="login-input" placeholder="Password">
-        <input type="submit" value="Login" class="loginForm__submit">
+    <form *ngIf="whichAuthForm === 'loginForm'" [formGroup]="loginForm" id="loginForm" (ngSubmit)="loginFormSubmit()" ngNativeValidate>
+        <div class="formControls">
+            <input required type="email" formControlName="email" class="login-input" placeholder="Email">
+            <input required type="password" formControlName="password" class="login-input" placeholder="Password">
+            <input required type="submit" value="Login" class="loginForm__submit">
+        </div>
+        <span class="go_to_login_reg" (click)="changeAuthForm('registrationForm')">Don't have an account? <span>Register for free</span></span>
+    </form>
+    
+    <form *ngIf="whichAuthForm === 'registrationForm'" [formGroup]="registrationForm" id="registrationForm" (ngSubmit)="registrationFormSubmit()" ngNativeValidate>
+        <div class="formControls">
+            <input type="email" formControlName="email" class="login-input" placeholder="Email">
+            <input type="password" formControlName="password" class="login-input" placeholder="Password">
+            <input type="text" formControlName="npToken" class="login-input" placeholder="Nova Poshta Token">
+            <input type="submit" value="Register" class="registrationForm__submit">
+        </div>
+        <span class="go_to_login_reg" (click)="changeAuthForm('loginForm')">Already with us? <span>Login</span></span>
     </form>
 </ng-container>
 <ng-container *ngIf="loginToken">
+    <p (click)="logout()" class="logout-btn">Logout</p>
     <form action="" [formGroup]="userForm" id="userForm" (ngSubmit)="userFormSubmit()" ngNativeValidate>
         <table class="post-table">
             <tr>
@@ -44,5 +58,3 @@
         <input type="submit" value="Save" id="accountSubmitButton">
     </form>
 </ng-container>
-
-{{loginToken}}

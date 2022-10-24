@@ -93,7 +93,7 @@ class RegistrationAPIView(APIView):
     serializer_class = serializers.RegistrationSerializer
 
     def post(self, request):
-        user = request.data.get('user', {})
+        user = request.data
 
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
@@ -118,3 +118,4 @@ class LoginAPIView(APIView):
 from rest_framework_simplejwt.views import TokenObtainPairView
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = serializers.MyTokenObtainPairSerializer
+    permission_classes = (permissions.AllowAny,)
