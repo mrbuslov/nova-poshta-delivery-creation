@@ -440,7 +440,7 @@ export class PostComponent implements OnInit {
 
 
     this.http.post(this.API_DOMAIN + '/posts/', JSON.stringify(data), this.httpOptions).subscribe((response:any) =>{
-      console.log(response);
+      // console.log(response);
     });
   }
 

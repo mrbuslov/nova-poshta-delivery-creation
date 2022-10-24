@@ -1,8 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { asapScheduler, debounceTime, distinctUntilChanged, fromEvent, Observable } from 'rxjs';
+import { asapScheduler, debounceTime, distinctUntilChanged, first, fromEvent, Observable } from 'rxjs';
 import { UserService } from './user.service';
+import { ToastrService } from 'ngx-toastr';
+
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-account',
@@ -30,7 +33,7 @@ export class AccountComponent implements OnInit  {
   showSeachedCityUl:boolean = false;
   showSeachedDepartmentOptions: boolean = false;
 
-  loginToken: string;
+  loginToken: string = null;
 
   get httpOptions(){
     return {
@@ -40,29 +43,113 @@ export class AccountComponent implements OnInit  {
       }),
     }
   }
+
+  get currentUser(){
+    return localStorage.getItem('currentUser')
+  }
+  get currentUserToken(){
+    return JSON.parse(localStorage.getItem('currentUser'))['access']
+  }
+  get currentUserRefreshToken(){
+    return JSON.parse(localStorage.getItem('currentUser'))['refresh']
+  }
+  set currentUser(userDict:string){
+    if(userDict !== null){
+      localStorage.setItem('currentUser', userDict);
+      this.loginToken = JSON.parse(userDict)['access'];
+    }
+    else{
+      localStorage.removeItem('currentUser');
+      this.loginToken = null;
+    }
+  }
+
+
+  get toastrOptions(){
+    // https://www.npmjs.com/package/ngx-toastr
+    return {
+      timeOut: 2000,
+    }
+  }
   
 
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
+    private toastr: ToastrService // for notifications
   ) {
   }
-  ngOnInit() {
-    this.getUserDataFromServer(this.MY_API_KEY);
-    this.showUserDataForm();
+  ngOnInit(){
+    if(this.currentUser){
+      this.loginToken = this.currentUserToken;
+      this.getUserDataFromServer();
+      this.showUserDataForm();
+    }
+    else{
+      this.showLoginForm();
+    }
   }
   ngAfterViewInit() {}
 
-  async getMyToken(){
-    var data={
-      'email': this.MY_EMAIL,
-      'password': this.MY_PASSWORD,
+
+
+  // ------------------------------------- LOGIN FORM --------------------------------------------------------------
+
+  loginForm: FormGroup;
+  showLoginForm(){
+    this.loginForm = this.formBuilder.group({
+      email: '',
+      password: '',
+    });
+  }
+
+  get getLoginForm(){
+    return this.loginForm.controls;
+  }
+
+  loginFormSubmit(){
+    this.userService.login({'email': this.getLoginForm['email'].value, 'password': this.getLoginForm['password'].value})  //.pipe(first())
+    .subscribe((user:any)=>{
+      if(user && user.access){
+        this.currentUser = JSON.stringify(user);
+        this.loginToken = this.currentUserToken;
+        this.getUserDataFromServer();
+        this.showUserDataForm();
+      }
+    },
+    error => {
+      console.log('error');
+      this.toastr.error('Pass in right data', 'Wrong data!' , this.toastrOptions);
     }
-    var my_token:any = await this.http.post(this.API_DOMAIN + '/token/', data).toPromise() // sync request
-    this.loginToken = my_token['access']
+    );
+  }
+
+  // ------------------------------------- Account FORM --------------------------------------------------------------
+
+  async getUserDataFromServer(){
+    var np_api_key:any = jwt_decode(this.currentUserToken);
+    np_api_key = np_api_key['npToken'];
     
-    this.userService.changeLoginTokenParam(this.loginToken) // pass to post component
+    this.http.get(this.API_DOMAIN + '/users/' + np_api_key + '/', this.httpOptions)
+    .subscribe(
+      (data:any) => {
+        this.fillUserFormWithData(data);
+      },
+      error => {
+        if(error.status === 401){ // Means Unauthorized - access token invalid
+          this.userService.refreshToken(this.currentUserRefreshToken).subscribe(data => {
+            JSON.stringify(
+              {
+                'refresh':this.currentUserRefreshToken,
+                'access':data,
+              }
+            )
+          })
+          this.getUserDataFromServer()
+        }
+      }
+    )
   }
 
   showUserDataForm(){
@@ -84,12 +171,6 @@ export class AccountComponent implements OnInit  {
     })
   }
 
-  login() {
-    this.userService.login({'email': this.MY_EMAIL, 'password': this.MY_PASSWORD });
-  }
-  isAuthenticated(){
-    return this.loginToken?true:false
-  }
 
 
   userFormSubmit(){
@@ -101,6 +182,9 @@ export class AccountComponent implements OnInit  {
       }
     )
   }
+
+
+  
 
 
 
@@ -297,18 +381,7 @@ export class AccountComponent implements OnInit  {
 
 
   
-  async getUserDataFromServer(np_api_key:string){
-    await this.getMyToken()
-    this.http.get(this.API_DOMAIN + '/users/' + np_api_key + '/', this.httpOptions)
-    .subscribe(
-      (data:any) => {
-        this.fillUserFormWithData(data);
-      },
-      error => {
-        // this.loginErrors = error['error']
-      }
-    )
-  }
+  
 
   SenderDepartmentCliked:boolean=false;
   subscribeToApiByClickSenderDepartment(){
@@ -375,8 +448,6 @@ export class AccountComponent implements OnInit  {
 
     
   }
-
-
 }
 
 

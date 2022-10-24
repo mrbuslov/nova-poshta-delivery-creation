@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, ReplaySubject, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -48,28 +48,36 @@ export class UserService {
     }
   }
 
-  public login(user:any){
-    this.http.post(this.API_DOMAIN + '/api-token-auth/', JSON.stringify(user), this.httpOptions)
-    .subscribe(
-      (data:any) => {
-        this.updateData(data['token'])
-      },
-      error => {
-        this.loginErrors = error['error']
-      }
+  public login(user_dict:any){
+    // this.http.post(this.API_DOMAIN + '/api-token-auth/', JSON.stringify(user), this.httpOptions)
+    // .subscribe(
+    //   (data:any) => {
+    //     // this.updateData(data['token'])
+    //     console.log(data)
+    //   },
+    //   error => {
+    //     this.loginErrors = error['error']
+    //   }
+    // )
+
+    return this.http.post(this.API_DOMAIN + '/token/', JSON.stringify(user_dict), this.httpOptions)
+    .pipe(
+      (data:any) => { return data;},
     )
   }
 
 
-  public refreshToken(){
-    this.http.post(this.API_DOMAIN + '/api-token-refresh/', JSON.stringify({token:this.token}), this.httpOptions)
-    .subscribe(
+  public refreshToken(refreshT:string){
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    }
+    return this.http.post(this.API_DOMAIN + '/token/refresh/', JSON.stringify({'refresh':refreshT}), httpOptions)
+    .pipe(
       (data:any) => {
-        this.updateData(data['token'])
+        return data['access'];
       },
-      error => {
-        this.loginErrors = error['error']
-      }
     )
   }
 
@@ -78,6 +86,8 @@ export class UserService {
     this.token = null;
     this.token_expires = null;
     this.email = null;
+
+    localStorage.removeItem('currentUser');
   }
 
   private updateData(token:string){

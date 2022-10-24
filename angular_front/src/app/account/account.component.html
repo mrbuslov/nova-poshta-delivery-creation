@@ -1,9 +1,14 @@
 <a href="https://new.novaposhta.ua/dashboard/invoices-my" class="go-to-np" target="_blank">Go to Nova Poshta</a>
-<form action="" [formGroup]="userForm" id="userForm" (ngSubmit)="userFormSubmit()" ngNativeValidate>
-    <ng-container *ngIf="!isAuthenticated()">
-        <button (click)="login()">Login</button>
-    </ng-container>
-    <ng-container *ngIf="isAuthenticated()">
+
+<ng-container *ngIf="!loginToken">
+    <form [formGroup]="loginForm" id="loginForm" (ngSubmit)="loginFormSubmit()" ngNativeValidate>
+        <input type="email" formControlName="email" class="login-input" placeholder="Email">
+        <input type="password" formControlName="password" class="login-input" placeholder="Password">
+        <input type="submit" value="Login" class="loginForm__submit">
+    </form>
+</ng-container>
+<ng-container *ngIf="loginToken">
+    <form action="" [formGroup]="userForm" id="userForm" (ngSubmit)="userFormSubmit()" ngNativeValidate>
         <table class="post-table">
             <tr>
                 <td>Your first name</td>
@@ -37,5 +42,7 @@
 
         </table>
         <input type="submit" value="Save" id="accountSubmitButton">
-    </ng-container>
-</form>
+    </form>
+</ng-container>
+
+{{loginToken}}

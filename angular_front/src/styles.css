@@ -26,11 +26,35 @@
     color: #fff;
 }
 
-#postForm, #userForm{
+#postForm, #userForm, #loginForm{
     display: flex;
     flex-direction: column;
     padding: 20px;
     box-sizing: border-box;
+}
+#loginForm{
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+
+}
+.login-input{
+    outline: none;
+    border: 1px solid;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 200px;
+}
+.loginForm__submit{
+    width: 200px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    background: #4cbdff;
+    border: 0;
+    color: #fff;
+    border-radius: 5px;
 }
 
 .post-table td{
@@ -87,10 +111,14 @@
 .postForm__submit-button{
     width: 200px;
     height: 40px;
-    font-size: 16px;
+    font-size: 20px;
     margin-top: 20px;
     margin-left: auto;
     cursor: pointer;
+    background: #4cbdff;
+    border: 0;
+    color: #fff;
+    border-radius: 5px;
 }
 
 

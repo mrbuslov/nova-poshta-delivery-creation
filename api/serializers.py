@@ -84,3 +84,18 @@ class LoginSerializer(serializers.Serializer):
             # 'username': user.username,
             # 'token': user.token
         }
+
+
+
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+# to return to Angular email and token
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token['email'] = user.email
+        token['npToken'] = user.npToken
+
+        return token
